@@ -14,23 +14,23 @@
 
 enum count_states{init, inc_p, inc_r, dec_p, dec_r, reset_p, reset_r, release} count_state;
 
-
+unsigned char invertpina;
 
 void Tick_Count(){
 	switch (count_state){
 		case init:
-			if(((PINA & 0x01) > 0) && !((PINA & 0x02) > 0) ){
+			if(((invertpina & 0x01) > 0) && !((invertpina & 0x02) > 0) ){
 				count_state = inc_p;
 			}
-			else if( !((PINA & 0x01) > 0) && ((PINA & 0x02) > 0)){
+			else if( !((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0)){
 				count_state = dec_p;
 			}
-			else if(((PINA & 0x01) > 0) && ((PINA & 0x02) > 0) ){
+			else if(((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0) ){
 				count_state = reset_p;
 			}
 			break;
 		case inc_p:
-			if(((PINA & 0x01) > 0) && ((PINA & 0x02) > 0) ){
+			if(((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0) ){
 				count_state = reset_p;
 			}
 			else{
@@ -38,18 +38,18 @@ void Tick_Count(){
 			}
 			break;
 		case inc_r: 
-			if(((PINA & 0x01) > 0) && ((PINA & 0x02) > 0) ){
+			if(((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0) ){
 				count_state = reset_p;
 			}
-			else if((PINA & 0x01) > 0){
+			else if((invertpina & 0x01) > 0){
 				count_state = inc_r;
 			}
-			else if( !((PINA & 0x01) > 0)){
+			else if( !((invertpina & 0x01) > 0)){
 				count_state = release;
 			}
 			break;
 		case dec_p:
-			if( ((PINA & 0x01) > 0) && ((PINA & 0x02) > 0) ) {
+			if( ((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0) ) {
 				count_state = reset_p;
 			}
 			else{
@@ -57,20 +57,20 @@ void Tick_Count(){
 			}
 			break;
 		case dec_r:
-			if(((PINA & 0x01) > 0) &&((PINA & 0x02) > 0) ){
+			if(((invertpina & 0x01) > 0) &&((invertpina & 0x02) > 0) ){
 				count_state = reset_p;
 			}
-			else if((PINA & 0x02) > 0 ){
+			else if((invertpina & 0x02) > 0 ){
 				count_state = dec_r;
 			}
-			else if( !((PINA & 0x02) > 0) ){
+			else if( !((invertpina & 0x02) > 0) ){
 				count_state = release;
 			}
 		case reset_p:
 			count_state = reset_r;
 			break;
 		case reset_r:
-			if( !((PINA & 0x01) > 0) && !((PINA & 0x02) > 0) ){
+			if( !((invertpina & 0x01) > 0) && !((invertpina & 0x02) > 0) ){
 				count_state = release;
 			}
 			else{
@@ -78,13 +78,13 @@ void Tick_Count(){
 			}
 			break;
 		case release:
-			if( ((PINA & 0x01) > 0) && !((PINA & 0x02) > 0) ){
+			if( ((invertpina & 0x01) > 0) && !((invertpina & 0x02) > 0) ){
                                 count_state = inc_p;
                         }
-                        else if( !((PINA & 0x01) > 0) && ((PINA & 0x02) > 0)){
+                        else if( !((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0)){
                                 count_state = dec_p;
                         }
-                        else if( ((PINA & 0x01) > 0) && ((PINA & 0x02) > 0) ){
+                        else if( ((invertpina & 0x01) > 0) && ((invertpina & 0x02) > 0) ){
                                 count_state = reset_p;
                         }
                         break;
@@ -126,6 +126,7 @@ int main(void) {
 	count_state = init;
 
     while (1){
+	invertpina = ~PINA;
 	Tick_Count();
     }
     return 1;
