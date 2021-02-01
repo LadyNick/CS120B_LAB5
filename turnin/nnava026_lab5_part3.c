@@ -1,64 +1,111 @@
 /*	Author: Nicole Navarro
  *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment:
+ *	Lab Section:21
+ *	Assignment:LAB5 Challenge Exercise
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
+ *
+ *	Demo Link: https://youtu.be/NhltW3njE9M 
  */
 #include <avr/io.h>
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
 
-enum light_states{init, odd_p, odd_r, even_p, even_r}light_state;
+enum light_states{init, inc_p, inc_r, dec_p, dec_r}light_state;
 
 unsigned char A0;
+unsigned char count;
 
 void Tick(){
 	switch(light_state){
 		case init:
 			if(A0){
-				light_state = odd_p;
-			}
-			else{
-				light_state = init;
+				count = 0;
+				light_state = inc_p;
 			}
 			break;
-		case odd_p:
-			PORTB = 0x55;
+		case inc_p:
+			if(count == 0){
+				PORTB = 0X01;
+			}
+			else if(count == 1 ){
+				PORTB = 0x03;
+			}
+			else if(count == 2){
+				PORTB = 0x07;
+			}
+			else if(count == 3){
+				PORTB = 0X0F;
+			}
+			else if(count == 4){
+				PORTB = 0x1F;
+			}
+			else if(count == 5){
+				PORTB = 0X3F;
+			}
 			if(!A0){
-				light_state = odd_r;
+				++count;
+				light_state = inc_r;
 			}
 			else{
-				light_state = odd_p;
+				light_state = inc_p;
 			}
 			break;
-		case odd_r:
-			if(A0){
-				light_state = even_p;
+		case inc_r:
+			if(A0 && (count < 6)){
+				light_state = inc_p;
+			}
+			else if(A0 && (count >= 6)){
+				count = 0;
+				light_state = dec_p;
 			}
 			else{
-				light_state = odd_r;
+				light_state = inc_r;
 			}
 			break;
-		case even_p:
-			PORTB = 0xAA;
+		case dec_p:
+			if(count == 0){
+				PORTB = 0x1f;
+			}
+			else if(count == 1){
+				PORTB = 0x0f;
+			}
+			else if(count == 2){
+				PORTB = 0x07;
+			}
+			else if(count == 3){
+				PORTB = 0x03;
+			}
+			else if(count == 4){
+				PORTB = 0x01;
+			}
+			else if(count == 5){
+				PORTB = 0x00;
+			}
 			if(!A0){
-				light_state = even_r;
+				++count;
+				light_state = dec_r;
 			}
 			else{
-				light_state = even_p;
+				light_state = dec_p;
 			}
 			break;
-		case even_r:
-			if(A0){
-				light_state = odd_p;
+		case dec_r:
+			if(A0 && (count < 6)){
+				light_state = dec_p;
+			}
+			else if(A0 && (count >= 6)){
+				count = 0;
+				light_state = inc_p;
 			}
 			else{
-				light_state = even_r;
+				light_state = dec_r;
 			}
+			break;
+		default:
 			break;
 	}
 	
@@ -72,6 +119,7 @@ int main(void) {
     /* Insert your solution below */
 
 	light_state = init;
+	count = 0;
 
     while (1){
 	A0 = ~PINA & 0x01;
