@@ -30,6 +30,9 @@ void Tick_Count(){
 			else if( A0 && A1 ){
 				count_state = reset_p;
 			}
+			else{
+				count_state = init;
+			}
 			break;
 		case inc_p:
 			if( A0 && A1 ){
@@ -43,10 +46,10 @@ void Tick_Count(){
 			if( A0 && A1 ){
 				count_state = reset_p;
 			}
-			else if( A0 ){
+			else if( A0 && !A1 ){
 				count_state = inc_r;
 			}
-			else if( !A0 ){
+			else if( !A0 && !A1 ){
 				count_state = release;
 			}
 			break;
@@ -62,10 +65,10 @@ void Tick_Count(){
 			if(A0 && A1 ){
 				count_state = reset_p;
 			}
-			else if( A1 ){
+			else if( A1 && !A0){
 				count_state = dec_r;
 			}
-			else if( !A1 ){
+			else if( !A1 && !A0){
 				count_state = release;
 			}
 		case reset_p:
@@ -89,6 +92,9 @@ void Tick_Count(){
                         else if( A0 && A1 ){
                                 count_state = reset_p;
                         }
+			else{
+				count_state = release;	
+			}
                         break;
 		default:
 			count_state = init;
