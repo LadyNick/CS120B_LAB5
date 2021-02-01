@@ -28,7 +28,7 @@ void Tick(){
 			light_state = blinkslow1;
 			break;
 		case blinkslow1:
-			PORTC = 0XFF;
+			PORTB = 0XFF;
 			++slowcount;
 			if(!A0){
 				++count;
@@ -46,7 +46,7 @@ void Tick(){
 			}
 			break;
 		case blinkslow2:
-			PORTC = 0X00;
+			PORTB = 0X00;
 			++slowcount;
 			if(!A0){
 				++count;
@@ -64,7 +64,7 @@ void Tick(){
 			}
 			break;
 		case blinknorm1:
-			PORTC = 0XFF;
+			PORTB = 0XFF;
 			if(!A0){
 				++count;
 			}
@@ -75,7 +75,7 @@ void Tick(){
 			light_state = blinknorm2;
 			break;
 		case blinknorm2:
-			PORTC = 0X00;
+			PORTB = 0X00;
 			if(!A0){
 				++count;
 			}
@@ -86,7 +86,7 @@ void Tick(){
 			light_state = blinknorm1;
 			break;
 		case switchseq1:
-			PORTC = 0X15;
+			PORTB = 0X15;
 			if(!A0){
 				++count;
 			}
@@ -97,7 +97,7 @@ void Tick(){
 			light_state = switchseq2;
 			break;
 		case switchseq2:
-			PORTC = 0X2A;
+			PORTB = 0X2A;
 			if(!A0){
 				++count;
 			}
