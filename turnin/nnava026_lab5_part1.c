@@ -22,8 +22,8 @@ int main(void) {
 
     while (1) {
 
-	tmpA = PINA & 0x0f;	    
-
+	tmpA = ~PINA;	    
+	tmpA = tmpA & 0x0f
 
 	if(tmpA > 0x00){
 		tmpC = 0x01;
