@@ -15,24 +15,30 @@
 
 enum light_states{init, blinkslow1, blinkslow2 blinknorm1, blinknorm2, switchseq1, switchseq2}light_state;
 
-unsigned char count = 0;
+unsigned char count = 1;
+unsigned char slowcount = 0;
 volatile unsigned char TimerFlag = 0;
 void TimerISR() {TimerFlag = 1;}
 
 void Tick(){
 	switch(light_state){
 		case init:
-			count = 0;
+			slowcount = 0;
+			count = 1;
 			light_state = blinkslow1;
 			break;
 		case blinkslow1:
 			PORTC = 0XFF;
-			++count;
-			if(A0){
+			++slowcount;
+			if(!A0){
+				++count;
+			}
+			else if(A0 && (count != 0)){
+				count = 0;
 				light_state = blinknorm1;
 			}
-			if(count == 2){
-				count = 0;
+			if(slowcount == 2){
+				slowcount = 0;
 				light_state = blinkslow2;
 			}
 			else{
@@ -41,16 +47,20 @@ void Tick(){
 			break;
 		case blinkslow2:
 			PORTC = 0X00;
-			++count;
-			if(A0){
+			++slowcount;
+			if(!A0){
+				++count;
+			}
+			else if(A0 && (count != 0)){
+				count = 0;
 				light_state = blinknorm1;
 			}
-			if(count == 2){
-				count = 0;
+			if(slowcount == 2){
+				slowcount = 0;
 				light_state = blinkslow1;
 			}
 			else{
-				light_state - blinkslow2;
+				light_state = blinkslow2;
 			}
 			break;
 		case blinknorm1:
@@ -58,14 +68,45 @@ void Tick(){
 			if(!A0){
 				++count;
 			}
-			else if(A0 && (count != 0){
+			else if(A0 && (count != 0)){
 				count = 0;
 				light_state = switchseq1;
 			}
 			light_state = blinknorm2;
 			break;
-		
-			
+		case blinknorm2:
+			PORTC = 0X00;
+			if(!A0){
+				++count;
+			}
+			else if(A0 && (count != 0)){
+				count = 0;
+				light_state = switchseq1;
+			}
+			light_state = blinknorm1;
+			break;
+		case switchseq1:
+			PORTC = 0X15;
+			if(!A0){
+				++count;
+			}
+			else if(A0 && (count != 0)){
+				count = 0;
+				light_state = blinkslow1;
+			}
+			light_state = switchseq2;
+			break;
+		case switchseq2:
+			PORTC = 0X2A;
+			if(!A0){
+				++count;
+			}
+			else if(A0 && (count != 0)){
+				count = 0;
+				light_state = blinkslow1;
+			}
+			light_state = switchseq2;
+			break;
 	}
 	
 }
@@ -80,6 +121,8 @@ int main(void) {
 	light_state = light_states;
 	TimerSet(1000);
 	TimerOn();
+	count = 1;
+	slowcount = 0;
 
     while (1){
 	Tick();
