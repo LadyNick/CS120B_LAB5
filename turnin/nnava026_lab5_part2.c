@@ -14,7 +14,7 @@
 
 enum count_states{init, inc_p, inc_r, dec_p, dec_r, reset_p, reset_r, release} count_state;
 
-unsigned char not_pina;
+//unsigned char not_pina;
 unsigned char A0;
 unsigned char A1;
 
@@ -134,9 +134,9 @@ int main(void) {
 	count_state = init;
 
     while (1){
-	not_pina = ~PINA;
-	A0 = (not_pina & 0x01) > 0;
-	A1 = (not_pina & 0x02) > 0;
+	//not_pina = ~PINA;
+	A0 = (~PINA & 0x01);
+	A1 = (~PINA & 0x02) > 0;
 
 	Tick_Count();
     }
