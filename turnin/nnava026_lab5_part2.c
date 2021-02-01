@@ -130,9 +130,10 @@ int main(void) {
 	DDRA = 0x00; PINA = 0xFF;
 
     /* Insert your solution below */
-
+	PORTC = 0x07;
 	count_state = init;
-
+	PORTC = 0x07;
+	
     while (1){
 	//not_pina = ~PINA;
 	A0 = (~PINA & 0x01);
