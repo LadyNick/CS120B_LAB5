@@ -10,7 +10,6 @@
 #include <avr/io.h>
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
-#include "RIMS.h"
 #endif
 
 enum light_states{init, odd_p, odd_r, even_p, even_r}light_state;
@@ -28,7 +27,7 @@ void Tick(){
 			}
 			break;
 		case odd_p:
-			PORTB = 0x15;
+			PORTB = 0x55;
 			if(!A0){
 				light_state = odd_r;
 			}
@@ -45,7 +44,7 @@ void Tick(){
 			}
 			break;
 		case even_p:
-			PORTB = 0x2A;
+			PORTB = 0xAA;
 			if(!A0){
 				light_state = even_r;
 			}
